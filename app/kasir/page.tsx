@@ -1,12 +1,10 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { ArrowLeft, Plus, Minus, Trash2, ShoppingCart, Search } from "lucide-react"
+import { ArrowLeft, Plus, Minus, Trash2, ShoppingCart, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
+import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Separator } from "@/components/ui/separator"
 
 interface Product {
   id: string
@@ -29,25 +27,24 @@ const defaultProducts: Product[] = [
   { id: "6", name: "Teh Tawar", price: 3000, stock: 120, category: "Teh" },
   { id: "7", name: "Teh Manis", price: 5000, stock: 120, category: "Teh" },
   { id: "8", name: "Es Teh Manis", price: 5000, stock: 120, category: "Teh" },
-  { id: "9", name: "Teh Lemon", price: 8000, stock: 80, category: "Teh" },
-  { id: "10", name: "Jeruk Panas", price: 8000, stock: 60, category: "Minuman" },
-  { id: "11", name: "Jeruk Dingin", price: 8000, stock: 60, category: "Minuman" },
-  { id: "12", name: "Air Mineral", price: 3000, stock: 150, category: "Minuman" },
-  { id: "13", name: "Nasi Goreng", price: 15000, stock: 40, category: "Makanan" },
-  { id: "14", name: "Mie Goreng", price: 12000, stock: 40, category: "Makanan" },
-  { id: "15", name: "Nasi Kuning", price: 10000, stock: 30, category: "Makanan" },
-  { id: "16", name: "Pisang Goreng", price: 8000, stock: 50, category: "Snack" },
-  { id: "17", name: "Bakwan", price: 5000, stock: 60, category: "Snack" },
-  { id: "18", name: "Tahu Isi", price: 6000, stock: 50, category: "Snack" },
-  { id: "19", name: "Risoles", price: 7000, stock: 40, category: "Snack" },
-  { id: "20", name: "Roti Bakar", price: 10000, stock: 35, category: "Snack" },
+  { id: "9", name: "Jeruk Panas", price: 8000, stock: 60, category: "Minuman" },
+  { id: "10", name: "Jeruk Dingin", price: 8000, stock: 60, category: "Minuman" },
+  { id: "11", name: "Air Mineral", price: 3000, stock: 150, category: "Minuman" },
+  { id: "12", name: "Nasi Goreng", price: 15000, stock: 40, category: "Makanan" },
+  { id: "13", name: "Mie Goreng", price: 12000, stock: 40, category: "Makanan" },
+  { id: "14", name: "Nasi Kuning", price: 10000, stock: 30, category: "Makanan" },
+  { id: "15", name: "Pisang Goreng", price: 8000, stock: 50, category: "Gorengan" },
+  { id: "16", name: "Bakwan", price: 5000, stock: 60, category: "Gorengan" },
+  { id: "17", name: "Tahu Isi", price: 6000, stock: 50, category: "Gorengan" },
+  { id: "18", name: "Risoles", price: 7000, stock: 40, category: "Gorengan" },
+  { id: "19", name: "Roti Bakar", price: 10000, stock: 35, category: "Gorengan" },
 ]
 
 export default function KasirPage() {
   const [products, setProducts] = useState<Product[]>([])
   const [cart, setCart] = useState<CartItem[]>([])
-  const [searchTerm, setSearchTerm] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("Semua")
+  const [showCart, setShowCart] = useState(false)
 
   useEffect(() => {
     const savedProducts = localStorage.getItem("products")
@@ -62,10 +59,7 @@ export default function KasirPage() {
   const categories = ["Semua", ...Array.from(new Set(products.map(p => p.category)))]
 
   const filteredProducts = products.filter(
-    (product) =>
-      (selectedCategory === "Semua" || product.category === selectedCategory) &&
-      (product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        product.category.toLowerCase().includes(searchTerm.toLowerCase()))
+    (product) => selectedCategory === "Semua" || product.category === selectedCategory
   )
 
   const addToCart = (product: Product) => {
@@ -129,147 +123,199 @@ export default function KasirPage() {
 
     setProducts(updatedProducts)
     setCart([])
-    alert("Transaksi berhasil!")
+    setShowCart(false)
+    alert("Transaksi berhasil! Total: Rp " + getTotalPrice().toLocaleString())
   }
 
   return (
-    <div className="flex flex-col h-screen bg-gray-50 overflow-hidden">
+    <div className="flex flex-col h-screen bg-gray-50">
       {/* Header - Fixed */}
-      <div className="flex-shrink-0 bg-white border-b shadow-sm">
-        <div className="container mx-auto p-3 sm:p-4 max-w-6xl">
+      <div className="flex-shrink-0 bg-gradient-to-r from-amber-600 to-amber-700 text-white shadow-lg">
+        <div className="p-4 flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <Button variant="outline" size="icon" className="h-9 w-9">
-              <ArrowLeft className="h-4 w-4" />
+            <Button variant="ghost" size="icon" className="h-10 w-10 text-white hover:bg-amber-800">
+              <ArrowLeft className="h-5 w-5" />
             </Button>
             <div>
-              <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Kasir Warkop</h1>
-              <p className="text-xs sm:text-sm text-gray-600">Proses transaksi penjualan</p>
+              <h1 className="text-xl font-bold">Kasir Warkop</h1>
+              <p className="text-xs text-amber-100">Point of Sale</p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Cart Section - Fixed */}
+      {/* Category Tabs - Fixed */}
+      <div className="flex-shrink-0 bg-white border-b shadow-sm overflow-x-auto">
+        <div className="flex gap-1 p-2 min-w-max">
+          {categories.map((category) => (
+            <button
+              key={category}
+              onClick={() => setSelectedCategory(category)}
+              className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
+                selectedCategory === category
+                  ? "bg-amber-600 text-white shadow-md"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              }`}
+            >
+              {category}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Products Grid - Scrollable */}
+      <div className="flex-1 overflow-y-auto p-3 pb-24">
+        <div className="grid grid-cols-2 gap-3">
+          {filteredProducts.map((product) => (
+            <Card
+              key={product.id}
+              className="hover:shadow-lg transition-all active:scale-95 cursor-pointer border-2 hover:border-amber-500"
+              onClick={() => addToCart(product)}
+            >
+              <CardContent className="p-3">
+                <Badge variant="secondary" className="text-xs mb-2">
+                  {product.category}
+                </Badge>
+                <h3 className="font-bold text-base mb-1 line-clamp-2 min-h-[2.5rem]">
+                  {product.name}
+                </h3>
+                <p className="text-xl font-bold text-amber-600 mb-1">
+                  {(product.price / 1000).toFixed(0)}k
+                </p>
+                <div className="flex items-center justify-between">
+                  <p className="text-xs text-gray-500">Stok: {product.stock}</p>
+                  <div className="bg-amber-600 text-white p-1.5 rounded-full">
+                    <Plus className="h-4 w-4" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+
+      {/* Bottom Cart Button - Fixed */}
       {cart.length > 0 && (
-        <div className="flex-shrink-0 bg-white border-b shadow-md">
-          <div className="container mx-auto p-3 sm:p-4 max-w-6xl">
-            <div className="flex items-center justify-between mb-3">
-              <span className="flex items-center font-semibold text-base sm:text-lg">
-                <ShoppingCart className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
-                Keranjang ({getTotalItems()})
-              </span>
-              <span className="text-green-600 font-bold text-base sm:text-lg">
+        <div className="flex-shrink-0 fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg p-3">
+          <Button
+            onClick={() => setShowCart(true)}
+            className="w-full h-14 bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white font-bold text-lg shadow-lg"
+            size="lg"
+          >
+            <ShoppingCart className="h-5 w-5 mr-2" />
+            <span className="flex-1 text-left">
+              Lihat Pesanan ({getTotalItems()})
+            </span>
+            <span>Rp {getTotalPrice().toLocaleString()}</span>
+          </Button>
+        </div>
+      )}
+
+      {/* Cart Modal - Fullscreen */}
+      {showCart && (
+        <div className="fixed inset-0 bg-white z-50 flex flex-col">
+          {/* Cart Header */}
+          <div className="flex-shrink-0 bg-gradient-to-r from-amber-600 to-amber-700 text-white p-4 shadow-lg">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setShowCart(false)}
+                  className="h-10 w-10 text-white hover:bg-amber-800"
+                >
+                  <X className="h-6 w-6" />
+                </Button>
+                <div>
+                  <h2 className="text-xl font-bold">Keranjang</h2>
+                  <p className="text-xs text-amber-100">{getTotalItems()} item</p>
+                </div>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setCart([])}
+                className="text-white hover:bg-amber-800 text-xs"
+              >
+                Hapus Semua
+              </Button>
+            </div>
+          </div>
+
+          {/* Cart Items - Scrollable */}
+          <div className="flex-1 overflow-y-auto p-4 space-y-3">
+            {cart.map((item) => (
+              <Card key={item.id} className="border-2">
+                <CardContent className="p-4">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex-1 mr-2">
+                      <h3 className="font-bold text-base mb-1">{item.name}</h3>
+                      <p className="text-amber-600 font-semibold text-lg">
+                        Rp {item.price.toLocaleString()}
+                      </p>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => removeFromCart(item.id)}
+                      className="text-red-500 hover:bg-red-50 h-8 w-8"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  
+                  <div className="flex items-center justify-between bg-gray-50 rounded-lg p-2">
+                    <span className="text-sm text-gray-600">Jumlah:</span>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                        className="h-10 w-10 rounded-full border-2"
+                      >
+                        <Minus className="h-5 w-5" />
+                      </Button>
+                      <span className="w-12 text-center font-bold text-xl">{item.quantity}</span>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                        className="h-10 w-10 rounded-full border-2"
+                      >
+                        <Plus className="h-5 w-5" />
+                      </Button>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-3 pt-3 border-t flex justify-between items-center">
+                    <span className="text-sm text-gray-600">Subtotal:</span>
+                    <span className="font-bold text-lg text-amber-600">
+                      Rp {(item.price * item.quantity).toLocaleString()}
+                    </span>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {/* Cart Footer - Checkout */}
+          <div className="flex-shrink-0 bg-white border-t shadow-lg p-4 space-y-3">
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-lg font-semibold">Total Pembayaran:</span>
+              <span className="text-2xl font-bold text-amber-600">
                 Rp {getTotalPrice().toLocaleString()}
               </span>
             </div>
-            <div className="max-h-32 sm:max-h-40 overflow-y-auto mb-3 space-y-2">
-              {cart.map((item) => (
-                <div key={item.id} className="flex items-center justify-between gap-2 bg-gray-50 p-2 rounded-lg">
-                  <div className="flex-1 min-w-0">
-                    <h4 className="font-medium text-sm sm:text-base truncate">{item.name}</h4>
-                    <p className="text-xs sm:text-sm text-gray-600">
-                      Rp {item.price.toLocaleString()} × {item.quantity}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-1 sm:gap-2">
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      className="h-7 w-7 sm:h-8 sm:w-8"
-                      onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                    >
-                      <Minus className="h-3 w-3 sm:h-4 sm:w-4" />
-                    </Button>
-                    <span className="w-6 sm:w-8 text-center text-sm sm:text-base font-medium">{item.quantity}</span>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      className="h-7 w-7 sm:h-8 sm:w-8"
-                      onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                    >
-                      <Plus className="h-3 w-3 sm:h-4 sm:w-4" />
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      className="h-7 w-7 sm:h-8 sm:w-8 text-red-600"
-                      onClick={() => removeFromCart(item.id)}
-                    >
-                      <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
-                    </Button>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <Button onClick={handleCheckout} className="w-full h-10 sm:h-11 text-sm sm:text-base font-semibold" size="lg">
-              Checkout - Rp {getTotalPrice().toLocaleString()}
+            <Button
+              onClick={handleCheckout}
+              className="w-full h-14 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-bold text-lg shadow-lg"
+              size="lg"
+            >
+              Checkout Sekarang
             </Button>
           </div>
         </div>
       )}
-
-      {/* Products Section - Scrollable */}
-      <div className="flex-1 overflow-y-auto">
-        <div className="container mx-auto p-3 sm:p-4 max-w-6xl">
-          <Card>
-            <CardHeader className="pb-3 sticky top-0 bg-white z-10">
-              <CardTitle className="text-base sm:text-lg mb-3">Daftar Menu</CardTitle>
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                <Input
-                  placeholder="Cari menu..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 text-sm sm:text-base"
-                />
-              </div>
-              {/* Category Filter */}
-              <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide mt-3">
-                {categories.map((category) => (
-                  <Button
-                    key={category}
-                    variant={selectedCategory === category ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setSelectedCategory(category)}
-                    className="whitespace-nowrap text-xs sm:text-sm"
-                  >
-                    {category}
-                  </Button>
-                ))}
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-4">
-                {filteredProducts.map((product) => (
-                  <Card key={product.id} className="hover:shadow-md transition-shadow">
-                    <CardContent className="p-2 sm:p-4">
-                      <div className="mb-2">
-                        <Badge variant="secondary" className="text-xs mb-1">
-                          {product.category}
-                        </Badge>
-                        <h3 className="font-semibold text-sm sm:text-base line-clamp-2">{product.name}</h3>
-                      </div>
-                      <p className="text-base sm:text-lg font-bold text-green-600 mb-1">
-                        Rp {product.price.toLocaleString()}
-                      </p>
-                      <p className="text-xs text-gray-600 mb-2">Stok: {product.stock}</p>
-                      <Button
-                        onClick={() => addToCart(product)}
-                        disabled={product.stock === 0}
-                        className="w-full h-8 sm:h-9 text-xs sm:text-sm"
-                        size="sm"
-                      >
-                        <Plus className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
-                        Tambah
-                      </Button>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
     </div>
   )
 }
