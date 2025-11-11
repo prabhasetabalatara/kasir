@@ -133,9 +133,15 @@ export default function KasirPage() {
       <div className="flex-shrink-0 bg-gradient-to-r from-amber-600 to-amber-700 text-white shadow-lg">
         <div className="p-4 flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <Button variant="ghost" size="icon" className="h-10 w-10 text-white hover:bg-amber-800">
-              <ArrowLeft className="h-5 w-5" />
-            </Button>
+    <Link href="/">
+      <Button
+        variant="ghost"
+        size="icon"
+        className="h-10 w-10 text-white hover:bg-amber-800"
+      >
+        <ArrowLeft className="h-5 w-5" />
+      </Button>
+    </Link>
             <div>
               <h1 className="text-xl font-bold">Kasir Warkop</h1>
               <p className="text-xs text-amber-100">Point of Sale</p>
