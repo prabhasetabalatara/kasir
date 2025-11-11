@@ -133,136 +133,142 @@ export default function KasirPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto p-3 sm:p-6 max-w-6xl">
-        {/* Header */}
-        <div className="flex items-center space-x-3 mb-4 sm:mb-6">
-          <Button variant="outline" size="icon" className="h-9 w-9">
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
-          <div>
-            <h1 className="text-xl sm:text-3xl font-bold text-gray-900">Kasir Warkop</h1>
-            <p className="text-xs sm:text-sm text-gray-600">Proses transaksi penjualan</p>
+    <div className="flex flex-col h-screen bg-gray-50 overflow-hidden">
+      {/* Header - Fixed */}
+      <div className="flex-shrink-0 bg-white border-b shadow-sm">
+        <div className="container mx-auto p-3 sm:p-4 max-w-6xl">
+          <div className="flex items-center space-x-3">
+            <Button variant="outline" size="icon" className="h-9 w-9">
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+            <div>
+              <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Kasir Warkop</h1>
+              <p className="text-xs sm:text-sm text-gray-600">Proses transaksi penjualan</p>
+            </div>
           </div>
         </div>
+      </div>
 
-        {/* Cart Section - Sekarang di atas */}
-        {cart.length > 0 && (
-          <Card className="mb-4 sm:mb-6 bg-white shadow-md">
-            <CardHeader className="pb-3">
-              <CardTitle className="flex items-center justify-between text-base sm:text-lg">
-                <span className="flex items-center">
-                  <ShoppingCart className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
-                  Keranjang ({getTotalItems()})
-                </span>
-                <span className="text-green-600">Rp {getTotalPrice().toLocaleString()}</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="pt-0">
-              <div className="space-y-3 mb-4">
-                {cart.map((item) => (
-                  <div key={item.id} className="flex items-center justify-between gap-2 bg-gray-50 p-2 rounded-lg">
-                    <div className="flex-1 min-w-0">
-                      <h4 className="font-medium text-sm sm:text-base truncate">{item.name}</h4>
-                      <p className="text-xs sm:text-sm text-gray-600">
-                        Rp {item.price.toLocaleString()} × {item.quantity}
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-1 sm:gap-2">
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="h-7 w-7 sm:h-8 sm:w-8"
-                        onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                      >
-                        <Minus className="h-3 w-3 sm:h-4 sm:w-4" />
-                      </Button>
-                      <span className="w-6 sm:w-8 text-center text-sm sm:text-base font-medium">{item.quantity}</span>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="h-7 w-7 sm:h-8 sm:w-8"
-                        onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                      >
-                        <Plus className="h-3 w-3 sm:h-4 sm:w-4" />
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="h-7 w-7 sm:h-8 sm:w-8 text-red-600"
-                        onClick={() => removeFromCart(item.id)}
-                      >
-                        <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
-                      </Button>
-                    </div>
+      {/* Cart Section - Fixed */}
+      {cart.length > 0 && (
+        <div className="flex-shrink-0 bg-white border-b shadow-md">
+          <div className="container mx-auto p-3 sm:p-4 max-w-6xl">
+            <div className="flex items-center justify-between mb-3">
+              <span className="flex items-center font-semibold text-base sm:text-lg">
+                <ShoppingCart className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
+                Keranjang ({getTotalItems()})
+              </span>
+              <span className="text-green-600 font-bold text-base sm:text-lg">
+                Rp {getTotalPrice().toLocaleString()}
+              </span>
+            </div>
+            <div className="max-h-32 sm:max-h-40 overflow-y-auto mb-3 space-y-2">
+              {cart.map((item) => (
+                <div key={item.id} className="flex items-center justify-between gap-2 bg-gray-50 p-2 rounded-lg">
+                  <div className="flex-1 min-w-0">
+                    <h4 className="font-medium text-sm sm:text-base truncate">{item.name}</h4>
+                    <p className="text-xs sm:text-sm text-gray-600">
+                      Rp {item.price.toLocaleString()} × {item.quantity}
+                    </p>
                   </div>
+                  <div className="flex items-center gap-1 sm:gap-2">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="h-7 w-7 sm:h-8 sm:w-8"
+                      onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                    >
+                      <Minus className="h-3 w-3 sm:h-4 sm:w-4" />
+                    </Button>
+                    <span className="w-6 sm:w-8 text-center text-sm sm:text-base font-medium">{item.quantity}</span>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="h-7 w-7 sm:h-8 sm:w-8"
+                      onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                    >
+                      <Plus className="h-3 w-3 sm:h-4 sm:w-4" />
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="h-7 w-7 sm:h-8 sm:w-8 text-red-600"
+                      onClick={() => removeFromCart(item.id)}
+                    >
+                      <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <Button onClick={handleCheckout} className="w-full h-10 sm:h-11 text-sm sm:text-base font-semibold" size="lg">
+              Checkout - Rp {getTotalPrice().toLocaleString()}
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {/* Products Section - Scrollable */}
+      <div className="flex-1 overflow-y-auto">
+        <div className="container mx-auto p-3 sm:p-4 max-w-6xl">
+          <Card>
+            <CardHeader className="pb-3 sticky top-0 bg-white z-10">
+              <CardTitle className="text-base sm:text-lg mb-3">Daftar Menu</CardTitle>
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Input
+                  placeholder="Cari menu..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10 text-sm sm:text-base"
+                />
+              </div>
+              {/* Category Filter */}
+              <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide mt-3">
+                {categories.map((category) => (
+                  <Button
+                    key={category}
+                    variant={selectedCategory === category ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setSelectedCategory(category)}
+                    className="whitespace-nowrap text-xs sm:text-sm"
+                  >
+                    {category}
+                  </Button>
                 ))}
               </div>
-              <Button onClick={handleCheckout} className="w-full h-10 sm:h-11 text-sm sm:text-base font-semibold" size="lg">
-                Checkout - Rp {getTotalPrice().toLocaleString()}
-              </Button>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-4">
+                {filteredProducts.map((product) => (
+                  <Card key={product.id} className="hover:shadow-md transition-shadow">
+                    <CardContent className="p-2 sm:p-4">
+                      <div className="mb-2">
+                        <Badge variant="secondary" className="text-xs mb-1">
+                          {product.category}
+                        </Badge>
+                        <h3 className="font-semibold text-sm sm:text-base line-clamp-2">{product.name}</h3>
+                      </div>
+                      <p className="text-base sm:text-lg font-bold text-green-600 mb-1">
+                        Rp {product.price.toLocaleString()}
+                      </p>
+                      <p className="text-xs text-gray-600 mb-2">Stok: {product.stock}</p>
+                      <Button
+                        onClick={() => addToCart(product)}
+                        disabled={product.stock === 0}
+                        className="w-full h-8 sm:h-9 text-xs sm:text-sm"
+                        size="sm"
+                      >
+                        <Plus className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+                        Tambah
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
             </CardContent>
           </Card>
-        )}
-
-        {/* Products Section */}
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base sm:text-lg mb-3">Daftar Menu</CardTitle>
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-              <Input
-                placeholder="Cari menu..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 text-sm sm:text-base"
-              />
-            </div>
-            {/* Category Filter */}
-            <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide mt-3">
-              {categories.map((category) => (
-                <Button
-                  key={category}
-                  variant={selectedCategory === category ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setSelectedCategory(category)}
-                  className="whitespace-nowrap text-xs sm:text-sm"
-                >
-                  {category}
-                </Button>
-              ))}
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-4">
-              {filteredProducts.map((product) => (
-                <Card key={product.id} className="hover:shadow-md transition-shadow">
-                  <CardContent className="p-2 sm:p-4">
-                    <div className="mb-2">
-                      <Badge variant="secondary" className="text-xs mb-1">
-                        {product.category}
-                      </Badge>
-                      <h3 className="font-semibold text-sm sm:text-base line-clamp-2">{product.name}</h3>
-                    </div>
-                    <p className="text-base sm:text-lg font-bold text-green-600 mb-1">
-                      Rp {product.price.toLocaleString()}
-                    </p>
-                    <p className="text-xs text-gray-600 mb-2">Stok: {product.stock}</p>
-                    <Button
-                      onClick={() => addToCart(product)}
-                      disabled={product.stock === 0}
-                      className="w-full h-8 sm:h-9 text-xs sm:text-sm"
-                      size="sm"
-                    >
-                      <Plus className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
-                      Tambah
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+        </div>
       </div>
     </div>
   )
